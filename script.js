@@ -1,42 +1,26 @@
 /*global setInterval */
-
 var collectionsOFAllSquares = [];
 var points = 0;
 var squareOffsite = 100;
 var squareSize = 95;
 var boardSize = 5;
-  
-    var doc = this.document,
-        body = doc.getElementsByTagName('body')[0];
+var squareCounter = 0;
+var doc = this.document,
+    body = doc.getElementsByTagName('body')[0];
 //setInterval(function() {
 //
 // addSquareRandom();
 //}, 1000);
 
-setTimeout(function(){fillBoard() }, 1000);
-function addSquareRandom(){
-    
+setTimeout(function() {
+    fillBoard()
+}, 1000);
+
+function addSquareRandom() {
+
     var posX = Math.floor((Math.random() * boardSize) + 1);
     var posY = Math.floor((Math.random() * boardSize) + 1);
-    var div = this.document.createElement("DIV");
-    div.style.position = 'absolute';
-    div.style.width = squareSize + 'px';
-    div.style.height = squareSize + 'px';
-    div.style.background = getRandomColor2();
-
-
-    div.style.left = (posX * squareOffsite) + 'px';
-    div.style.top = (posY * squareOffsite) + 'px';
-    div.addEventListener("click", function() {
-        checkStrike(div);
-        div.remove();
-        points++;
-        updatePoints();
-        
-    });
-
-    collectionsOFAllSquares.push(div);
-    this.document.getElementsByTagName('body')[0].appendChild(div);
+    addSquare(posX, posY);
 }
 
 
@@ -60,6 +44,7 @@ function getRandomColor() {
 var strikeOffset = 0; //
 var strikeCollection = [];
 var strikeColor = '';
+
 function addStrikeElem(elem) {
     var stikeXSize = 90;
     var strikYSize = 25;
@@ -68,14 +53,16 @@ function addStrikeElem(elem) {
     div.style.width = stikeXSize + 'px';
     div.style.height = strikYSize + 'px';
     div.style.background = elem.style.background;
-    div.style.left = 20 + (95 *(strikeOffset++%3)) + 'px';
-    div.style.top = (50 ) + 'px';
+    div.style.left = 20 + (95 * (strikeOffset++ % 3)) + 'px';
+    div.style.top = (50) + 'px';
     strikeCollection.push(div);
     this.document.getElementsByTagName('body')[0].appendChild(div);
-    
+   
+
 }
 
-function restartAll(){
+function restartAll() {
+    squareCounter = 0;
     restartStrike();
     restoreBoard();
     strikeColor = '';
@@ -91,60 +78,72 @@ function restartStrike() {
     });
     strikeCollection = [];
 }
-function checkStrike(newElem){
-    if(strikeColor === '' || strikeColor === newElem.style.background){
+
+function checkStrike(newElem) {
+    if (strikeColor === '' || strikeColor === newElem.style.background) {
         addStrikeElem(newElem);
         strikeColor = newElem.style.background;
-        if(strikeCollection.length === 4) {
+        if (strikeCollection.length === 4) {
             //add extra points 
             restartStrike();
             strikeColor = '';
-            points+=10;
+            points += 10;
         }
     } else {
         restartStrike();
         strikeColor = newElem.style.background;
         addStrikeElem(newElem);
     }
-    
+
 }
 
 function restoreBoard() {
     collectionsOFAllSquares.forEach(function(entry) {
-    entry.remove();
-});
+        entry.remove();
+    });
     collectionsOFAllSquares = [];
 }
 
-function updatePoints (){
-    document.getElementById("pts").textContent=points;
+function updatePoints() {
+    document.getElementById("pts").textContent = points;
 }
 
-function fillBoard(){
-    var body2 = this.document.getElementsByTagName('body')[0]
-     for (var i = 1; i < 6; i++) {
+function fillBoard() {
+    for (var i = 1; i < 6; i++) {
         for (var j = 1; j < 6; j++) {
-            var div = this.document.createElement("DIV");
-            div.style.position = 'absolute';
-            div.style.width = squareSize + 'px';
-            div.style.height = squareSize + 'px';
-            div.style.background = getRandomColor2();
-            div.style.left = (i * squareOffsite) + 'px';
-            div.style.top = (j * squareOffsite) + 'px';
-           asd(div);
-            collectionsOFAllSquares.push(div);
-             body2.appendChild(div);
-           
+            addSquare(i, j);
         }
     }
 }
-function asd(div){
-     div.addEventListener("click", function() {
-                checkStrike(div);
-                div.remove();
-                points++;
-                updatePoints();
 
-            });
+function addListener(div) {
+    div.addEventListener("click", function() {
+        checkStrike(div);
+        div.remove();
+        squareCounter=squareCounter-1;
+        points++;
+        updatePoints();
+        checkIfWin();
+        
+    });
 
+}
+function checkIfWin(){
+    if(squareCounter === 0){
+        alert('Congrats u win!!!! with '+points);
+    }
+}
+function addSquare(posX, posY) {
+    var body2 = this.document.getElementsByTagName('body')[0]
+    var div = this.document.createElement("DIV");
+    div.style.position = 'absolute';
+    div.style.width = squareSize + 'px';
+    div.style.height = squareSize + 'px';
+    div.style.background = getRandomColor2();
+    div.style.left = (posX * squareOffsite) + 'px';
+    div.style.top = (posY * squareOffsite) + 'px';
+    addListener(div);
+    collectionsOFAllSquares.push(div);
+    body2.appendChild(div);
+    squareCounter++;
 }
