@@ -2,16 +2,20 @@
 
 var collectionsOFAllSquares = [];
 var points = 0;
-setInterval(function() {
-
-    //var size = Math.floor((Math.random() * 100) + 40);
-    var squareSize = 95;
-    var boardSize = 5;
-    var offset = 100
+var squareOffsite = 100;
+var squareSize = 95;
+var boardSize = 5;
+  
     var doc = this.document,
         body = doc.getElementsByTagName('body')[0];
+//setInterval(function() {
+//
+// addSquareRandom();
+//}, 1000);
 
-
+setTimeout(function(){fillBoard() }, 1000);
+function addSquareRandom(){
+    
     var posX = Math.floor((Math.random() * boardSize) + 1);
     var posY = Math.floor((Math.random() * boardSize) + 1);
     var div = this.document.createElement("DIV");
@@ -21,8 +25,8 @@ setInterval(function() {
     div.style.background = getRandomColor2();
 
 
-    div.style.left = (posX * offset) + 'px';
-    div.style.top = (posY * offset) + 'px';
+    div.style.left = (posX * squareOffsite) + 'px';
+    div.style.top = (posY * squareOffsite) + 'px';
     div.addEventListener("click", function() {
         checkStrike(div);
         div.remove();
@@ -32,13 +36,9 @@ setInterval(function() {
     });
 
     collectionsOFAllSquares.push(div);
-    body.appendChild(div);
-}, 1000);
-
-
-function addSquare(){
-    
+    this.document.getElementsByTagName('body')[0].appendChild(div);
 }
+
 
 function getRandomColor2() {
     var colors = ['red', 'yellow', 'green'];
@@ -57,7 +57,7 @@ function getRandomColor() {
     return color;
 }
 
-var offset = 0; //
+var strikeOffset = 0; //
 var strikeCollection = [];
 var strikeColor = '';
 function addStrikeElem(elem) {
@@ -68,7 +68,7 @@ function addStrikeElem(elem) {
     div.style.width = stikeXSize + 'px';
     div.style.height = strikYSize + 'px';
     div.style.background = elem.style.background;
-    div.style.left = 20 + (95 *(offset++%3)) + 'px';
+    div.style.left = 20 + (95 *(strikeOffset++%3)) + 'px';
     div.style.top = (50 ) + 'px';
     strikeCollection.push(div);
     this.document.getElementsByTagName('body')[0].appendChild(div);
@@ -81,10 +81,11 @@ function restartAll(){
     strikeColor = '';
     points = 0;
     updatePoints();
+    fillBoard();
 }
 
 function restartStrike() {
-    offset = 0;
+    strikeOffset = 0;
     strikeCollection.forEach(function(entry) {
         entry.remove();
     });
@@ -120,5 +121,30 @@ function updatePoints (){
 }
 
 function fillBoard(){
-    
+    var body2 = this.document.getElementsByTagName('body')[0]
+     for (var i = 1; i < 6; i++) {
+        for (var j = 1; j < 6; j++) {
+            var div = this.document.createElement("DIV");
+            div.style.position = 'absolute';
+            div.style.width = squareSize + 'px';
+            div.style.height = squareSize + 'px';
+            div.style.background = getRandomColor2();
+            div.style.left = (i * squareOffsite) + 'px';
+            div.style.top = (j * squareOffsite) + 'px';
+           asd(div);
+            collectionsOFAllSquares.push(div);
+             body2.appendChild(div);
+           
+        }
+    }
+}
+function asd(div){
+     div.addEventListener("click", function() {
+                checkStrike(div);
+                div.remove();
+                points++;
+                updatePoints();
+
+            });
+
 }
